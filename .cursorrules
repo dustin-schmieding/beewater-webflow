@@ -1,0 +1,277 @@
+# ============================================================
+# CURSOR RULES — Webflow Development Project
+# ============================================================
+# This file gives Cursor AI full context about how this project
+# works so every suggestion, completion, and edit it makes is
+# relevant to Webflow's environment and your coding conventions.
+# 
+# Edit the sections marked [CUSTOMIZE] as your project grows.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# 1. PROJECT OVERVIEW
+# ------------------------------------------------------------
+
+## What This Project Is
+- A library of JavaScript components, CSS, animations, and 
+  automation scripts built in Cursor for use inside Webflow sites.
+- Code is deployed via jsDelivr CDN (served from this GitHub repo)
+  and loaded into Webflow via custom code blocks.
+- CMS automation scripts run locally via Node.js and interact 
+  with the Webflow Data API v2.
+
+## [CUSTOMIZE] Current Active Site
+- Site name: [BeeWater Studio]
+- Webflow subdomain: [beewater].webflow.io
+- Custom domain (if live): [beewater.studio]
+- Webflow Plan: CMS
+
+
+# ------------------------------------------------------------
+# 2. WEBFLOW ENVIRONMENT — CRITICAL CONTEXT
+# ------------------------------------------------------------
+# Webflow is NOT a standard HTML/JS environment. Cursor must 
+# understand these differences to give accurate suggestions.
+
+## jQuery
+- jQuery 3.x is loaded globally by Webflow on every page
+- The global $ and jQuery objects are always available
+- Do NOT import or require jQuery — it is already present
+- Use $(document).ready() OR window.Webflow.push() (see below)
+
+## Webflow JS Initialization
+- Webflow runs its own initialization sequence on page load
+- Code that touches the DOM or Webflow components MUST be 
+  wrapped in window.Webflow.push() to run AFTER Webflow inits:
+
+    window.Webflow.push(function() {
+      // Your code here — Webflow is fully ready
+    });
+
+- Using $(document).ready() alone can cause race conditions 
+  with Webflow's interactions (IX2) system — always prefer
+  window.Webflow.push() for anything Webflow-related
+
+## Webflow Interactions (IX2)
+- Webflow's built-in animation system is called IX2
+- IX2 triggers are tied to Webflow class names and element IDs
+- Do NOT manipulate elements controlled by IX2 with JS unless 
+  you know what you are doing — conflicts will break animations
+- Custom GSAP animations should target elements NOT controlled by IX2
+
+## CMS Collection Lists
+- Webflow CMS items render server-side
+- Collection list content is in the HTML at page load — 
+  you do NOT need to fetch it with JS (it's already in the DOM)
+- To manipulate CMS items with JS, query them by their 
+  Webflow-generated class names after window.Webflow.push()
+
+## Forms
+- Webflow has its own form handling system
+- To intercept form submissions use:
+    $('[data-name="YOUR FORM NAME"]').on('submit', function(e) { ... })
+- Do NOT use standard addEventListener on Webflow forms without 
+  also handling Webflow's native submission flow
+
+
+# ------------------------------------------------------------
+# 3. CODE DELIVERY — CDN SETUP
+# ------------------------------------------------------------
+
+## How Code Gets to Webflow
+1. Code is written and committed to this GitHub repo (main branch)
+2. jsDelivr automatically serves files from the repo
+3. Webflow loads files via <script> or <link> tags in custom code
+
+## CDN URL Pattern
+- Base URL: https://cdn.jsdelivr.net/gh/[GITHUB_USERNAME]/[REPO_NAME]@main/
+- Example JS file: https://cdn.jsdelivr.net/gh/yourname/webflow-dev@main/components/modal.js
+- Example CSS file: https://cdn.jsdelivr.net/gh/yourname/webflow-dev@main/components/modal.css
+
+## [CUSTOMIZE] Your CDN Base URL
+- https://cdn.jsdelivr.net/gh/[dustin-schmieding]/[beewater-webflow]@main/
+
+## Versioning / Cache
+- @main always serves the latest commit (may be cached briefly)
+- For production stability, pin to a release tag: @v1.0.0
+- To force a cache purge: https://purge.jsdelivr.net/gh/[dustin-schmieding]/[beewater-webflow]@main/[filepath]
+
+## Loading in Webflow
+- Site-wide scripts go in: Webflow Designer → Site Settings → Custom Code → Head/Footer
+- Page-specific scripts go in: Page Settings → Custom Code → Head/Before </body>
+- Inline component scripts go in: Designer → Embed element on canvas
+
+
+# ------------------------------------------------------------
+# 4. FOLDER STRUCTURE & FILE CONVENTIONS
+# ------------------------------------------------------------
+
+## /components
+- One file per component (e.g., accordion.js, modal.js)
+- Each file must be self-contained and not depend on other 
+  component files (utils/ is okay to reference)
+- Every component file must start with a metadata comment block:
+  
+    /**
+     * Component: [Name]
+     * Description: [What it does]
+     * Dependencies: [jQuery / GSAP / none]
+     * Webflow Load: [site-wide / page-specific]
+     * CDN URL: https://cdn.jsdelivr.net/gh/.../components/[name].js
+     */
+
+## /interactions
+- Animation and scroll-based effect scripts
+- Always use GSAP for complex animations (loaded via CDN)
+- ScrollTrigger plugin should be registered at top of file if used
+- Do NOT hard-code pixel values — use relative/percentage values 
+  or read from element dimensions dynamically
+
+## /cms-scripts
+- Node.js scripts only — these run locally, not in the browser
+- Each script must be self-contained with clear CLI instructions
+- Always use .env for API keys — never hardcode credentials
+- Script files should be named by action: e.g., import-blog-posts.js,
+  update-team-members.js, publish-site.js
+
+## /utils
+- Shared helper functions used across components
+- Keep functions pure and well-commented
+- Export as ES modules AND provide browser-compatible IIFE version
+  where needed (Webflow's embed environment is not module-aware)
+
+
+# ------------------------------------------------------------
+# 5. CLASS NAMING CONVENTIONS
+# ------------------------------------------------------------
+# [CUSTOMIZE] Update this as your Webflow project's class 
+# naming patterns become established.
+
+## General Rules
+- Webflow classes use kebab-case: my-component-name
+- Follow a loose BEM pattern: block__element--modifier
+- Never modify Webflow-generated "combo classes" with JS 
+  (classes that appear in italic in the Webflow designer)
+
+## [CUSTOMIZE] Project-Specific Classes
+- Utility prefix: u- (e.g., u-hidden, u-flex)
+- Component prefix: c- (e.g., c-modal, c-accordion)
+- JS hook prefix: js- (e.g., js-trigger, js-target)
+  → js- classes are for JS targeting ONLY — no CSS attached to them
+- State classes: is- (e.g., is-active, is-open, is-loading)
+
+
+# ------------------------------------------------------------
+# 6. JAVASCRIPT STYLE GUIDE
+# ------------------------------------------------------------
+
+## General
+- Use ES6+ syntax (arrow functions, const/let, template literals)
+- Always use const unless reassignment is needed, then let
+- Never use var
+- Use descriptive variable names — no single-letter variables 
+  except in short loops
+
+## Comments
+- Every function must have a JSDoc-style comment
+- Explain WHY, not just WHAT, for non-obvious logic
+- Mark todos as: // TODO: description
+- Mark Webflow-specific workarounds as: // WEBFLOW: explanation
+
+## Error Handling
+- Always wrap API calls in try/catch
+- Log errors with context: console.error('[ComponentName]:', error)
+- Never silently swallow errors
+
+## Module Pattern for Browser Files
+- Since Webflow embeds don't support ES modules, use IIFE pattern 
+  to avoid polluting global scope:
+
+    (function($) {
+      'use strict';
+      
+      // Your component code here
+      
+    })(jQuery);
+
+
+# ------------------------------------------------------------
+# 7. WEBFLOW API (CMS SCRIPTS)
+# ------------------------------------------------------------
+
+## API Version
+- Always use Webflow Data API v2
+- Base URL: https://api.webflow.com/v2/
+- Docs: https://developers.webflow.com/data/reference
+
+## Authentication
+- Bearer token authentication
+- Token stored in .env as WEBFLOW_API_TOKEN
+- Never log or expose the token
+
+## [CUSTOMIZE] Your Site & Collection IDs
+- Site ID: [YOUR_SITE_ID] 
+  (Found in Webflow → Site Settings → General → Site ID)
+- Collection IDs: [ADD AS YOU CREATE COLLECTIONS]
+  (Found in Webflow → CMS → [Collection] → right-click → Copy Collection ID)
+
+## Rate Limits
+- Be aware of Webflow API rate limits (60 req/min on CMS plan)
+- Add delay between bulk operations:
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+## Always Confirm Before Destructive Operations
+- Scripts that DELETE or bulk UPDATE must console.log a preview
+  and require a manual confirmation (e.g., --confirm flag) before executing
+
+
+# ------------------------------------------------------------
+# 8. LIBRARIES & DEPENDENCIES
+# ------------------------------------------------------------
+
+## Always Available in Webflow (no import needed)
+- jQuery 3.x → $, jQuery
+
+## Load via CDN When Needed (add to Webflow head)
+- GSAP: https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js
+- GSAP ScrollTrigger: https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js
+- Swiper: https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js
+
+## Node.js CMS Scripts (install locally)
+- axios (HTTP requests to Webflow API)
+- dotenv (environment variables)
+- chalk (colored terminal output for readability)
+- ora (loading spinners for long operations)
+
+
+# ------------------------------------------------------------
+# 9. THINGS CURSOR SHOULD NEVER DO IN THIS PROJECT
+# ------------------------------------------------------------
+
+- Never use document.write()
+- Never import/require jQuery (it's global)
+- Never hardcode API keys, site IDs, or tokens in component files
+- Never use ES module import/export syntax in /components or 
+  /interactions files (Webflow embeds don't support modules)
+- Never target Webflow combo classes with JavaScript
+- Never use document.querySelector without checking the element 
+  exists first (CMS pages render conditionally)
+- Never assume a page has a specific element — always guard:
+    const el = document.querySelector('.my-element');
+    if (!el) return;
+
+
+# ------------------------------------------------------------
+# 10. WORKFLOW REMINDERS
+# ------------------------------------------------------------
+
+- After every commit to main, jsDelivr may cache for ~12 hours
+  Use the purge URL to force immediate update during development
+- Test all components in Webflow's Preview mode AND published mode
+  (some behaviors differ between the two)
+- Webflow's Designer canvas is NOT an accurate JS runtime — 
+  always test real behavior in Preview or on the live/staging site
+- Keep a comment at the top of each Webflow custom code block 
+  indicating which CDN file it loads and what version/date
+

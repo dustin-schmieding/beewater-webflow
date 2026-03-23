@@ -1,0 +1,23 @@
+# ============================================================
+# .gitignore — Webflow Dev Project
+# ============================================================
+
+# Environment variables — NEVER commit this
+.env
+
+# Node
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
