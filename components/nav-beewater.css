@@ -1,6 +1,8 @@
 /**
  * Component: Nav BeeWater
- * Description: Full-width nav bar — logo left, links + CTA right, gold background.
+ * Description: Full-width nav bar — logo left (max 150px), links + CTA right.
+ *              Transparent until scroll; dark blurred background after 400px.
+ *              CTA: gold button, lowercase, arrow animates on hover.
  * Dependencies: none (pure CSS)
  * Webflow Load: site-wide (in Head or Footer)
  * CDN URL: https://cdn.jsdelivr.net/gh/[dustin-schmieding]/[beewater-webflow]@main/components/nav-beewater.css
@@ -13,7 +15,8 @@
  */
 
 /* -------------------------------------------------------------------
-   Base nav bar — full width, fixed top, gold background
+   Base nav bar — full width, fixed top
+   Transparent by default; dark blurred background after 400px scroll
 ------------------------------------------------------------------- */
 #bw-nav-min {
   position: fixed;
@@ -22,13 +25,19 @@
   right: 0;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  background: var(--_beewater-colors---bw-gold, #F5A623);
+  background: transparent;
   z-index: 1000;
   padding: 1rem 2rem;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+#bw-nav-min.bw-scrolled {
+  background: color-mix(in srgb, var(--_beewater-colors---bw-black, #1a1a1a) 80%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 /* Inner flex container — matches typical Webflow max-width wrapper */
@@ -42,7 +51,7 @@
   gap: 2rem;
 }
 
-/* Logo — top left */
+/* Logo — top left, max 150px */
 #bw-nav-min .bw-nav__logo {
   flex-shrink: 0;
 }
@@ -50,6 +59,13 @@
 #bw-nav-min .bw-nav__logo a,
 #bw-nav-min .bw-nav__logo img {
   display: block;
+  max-width: 150px;
+}
+
+#bw-nav-min .bw-nav__logo img {
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 /* Right side — links + CTA grouped */
@@ -80,9 +96,63 @@
   /* Inherit from parent — adjust in Webflow or add: color: #1a1a1a; */
 }
 
-/* CTA — anchored top right (within layout) */
+/* CTA — gold button, lowercase, arrow on hover */
 #bw-nav-min .bw-nav__cta {
   flex-shrink: 0;
+}
+
+/* When CTA is a wrapper with link/button inside, or when link has the class */
+#bw-nav-min .bw-nav__cta a,
+#bw-nav-min .bw-nav__cta.w-button,
+#bw-nav-min .bw-nav__cta .w-button,
+#bw-nav-min a.bw-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: lowercase;
+  text-decoration: none;
+  background: var(--_beewater-colors---bw-gold, #F5A623);
+  color: var(--_beewater-colors---bw-black, #1a1a1a);
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+#bw-nav-min .bw-nav__cta a::after,
+#bw-nav-min .bw-nav__cta.w-button::after,
+#bw-nav-min .bw-nav__cta .w-button::after,
+#bw-nav-min a.bw-nav__cta::after {
+  content: "→";
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+#bw-nav-min .bw-nav__cta a:hover,
+#bw-nav-min .bw-nav__cta a:focus-visible,
+#bw-nav-min .bw-nav__cta.w-button:hover,
+#bw-nav-min .bw-nav__cta.w-button:focus-visible,
+#bw-nav-min .bw-nav__cta .w-button:hover,
+#bw-nav-min .bw-nav__cta .w-button:focus-visible,
+#bw-nav-min a.bw-nav__cta:hover,
+#bw-nav-min a.bw-nav__cta:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#bw-nav-min .bw-nav__cta a:hover::after,
+#bw-nav-min .bw-nav__cta a:focus-visible::after,
+#bw-nav-min .bw-nav__cta.w-button:hover::after,
+#bw-nav-min .bw-nav__cta.w-button:focus-visible::after,
+#bw-nav-min .bw-nav__cta .w-button:hover::after,
+#bw-nav-min .bw-nav__cta .w-button:focus-visible::after,
+#bw-nav-min a.bw-nav__cta:hover::after,
+#bw-nav-min a.bw-nav__cta:focus-visible::after {
+  transform: translateX(4px);
 }
 
 /* -------------------------------------------------------------------
