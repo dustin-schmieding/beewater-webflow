@@ -63,7 +63,8 @@ cp .env.example .env
 
 | File | Description | Load |
 |------|-------------|-------|
-| — | — | — |
+| nav-beewater.css | Full-width nav bar — logo left, links + CTA right, gold background | Site-wide (Head) |
+| nav-beewater.js | Scroll state (bw-scrolled class) for nav on all pages | Site-wide (Footer) |
 
 ---
 
