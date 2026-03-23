@@ -1,0 +1,98 @@
+/**
+ * Component: Nav BeeWater
+ * Description: Full-width nav bar — logo left, links + CTA right, gold background.
+ * Dependencies: none (pure CSS)
+ * Webflow Load: site-wide (in Head or Footer)
+ * CDN URL: https://cdn.jsdelivr.net/gh/[dustin-schmieding]/[beewater-webflow]@main/components/nav-beewater.css
+ *
+ * WEBFLOW SETUP:
+ * 1. Create a Symbol (Components panel → + → Navbar or empty).
+ * 2. Build the structure below. Give the outer wrapper id="bw-nav-min" for hero scroll compatibility.
+ * 3. Add the Symbol to your page template / all pages.
+ * 4. Load this CSS site-wide: Site Settings → Custom Code → Head Code.
+ */
+
+/* -------------------------------------------------------------------
+   Base nav bar — full width, fixed top, gold background
+------------------------------------------------------------------- */
+#bw-nav-min {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background: var(--_beewater-colors---bw-gold, #F5A623);
+  z-index: 1000;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Inner flex container — matches typical Webflow max-width wrapper */
+#bw-nav-min .bw-nav__inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Logo — top left */
+#bw-nav-min .bw-nav__logo {
+  flex-shrink: 0;
+}
+
+#bw-nav-min .bw-nav__logo a,
+#bw-nav-min .bw-nav__logo img {
+  display: block;
+}
+
+/* Right side — links + CTA grouped */
+#bw-nav-min .bw-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-left: auto;
+}
+
+/* Nav links — Work, Story, Services */
+#bw-nav-min .bw-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#bw-nav-min .bw-nav__links li {
+  margin: 0;
+}
+
+#bw-nav-min .bw-nav__links a {
+  text-decoration: none;
+  color: inherit;
+  /* Inherit from parent — adjust in Webflow or add: color: #1a1a1a; */
+}
+
+/* CTA — anchored top right (within layout) */
+#bw-nav-min .bw-nav__cta {
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------------
+   Responsive — hide links on small screens (optional; customize)
+   Uncomment and adjust breakpoint as needed.
+------------------------------------------------------------------- */
+/*
+@media (max-width: 767px) {
+  #bw-nav-min .bw-nav__links {
+    display: none;
+  }
+}
+*/
