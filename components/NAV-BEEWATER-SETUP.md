@@ -1,6 +1,6 @@
 # Nav BeeWater — Webflow Setup Guide
 
-Full-width nav bar with logo left, links (Work, Story, Services), and CTA right. Gold background.
+Full-width nav bar with logo left (max 150px), links (Work, Story, Services), and CTA right. Transparent by default; dark blurred background after 400px scroll. CTA is a gold button with "start a project" (lowercase) and an arrow that animates on hover.
 
 ---
 
